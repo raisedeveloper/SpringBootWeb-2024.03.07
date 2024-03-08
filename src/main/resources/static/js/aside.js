@@ -7,7 +7,7 @@
         $('#stateMsgInput').attr({'class': 'mt-2'});       // 입력창이 보이게
         $('#stateInput').val($('#stateMsg').text());     // 입력창에 stateMsg 내용이 보이게
     });
-    $('#stateMsgSubmit').click(chageStateMsg);       // 이벤트 등록
+    $('#stateMsgSubmit').click(changeStateMsg);       // 이벤트 등록
  });
 
  function changeStateMsg() {
