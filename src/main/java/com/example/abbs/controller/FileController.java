@@ -20,31 +20,32 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/file")
 public class FileController {
-	@Value("{spring.servlet.multipart.location}") private String uploadDir;
+	@Value("${spring.servlet.multipart.location}") private String uploadDir;
 	
 	@GetMapping("/profile/{filename}")
-	   public ResponseEntity<Resource> profile(@PathVariable String filename) {
-	      Path path = Paths.get(uploadDir + "profile/" + filename);
-	      try {
-	         String contentType = Files.probeContentType(path);
-	         HttpHeaders headers = new HttpHeaders();
-	         headers.setContentDisposition(
-	               ContentDisposition.builder("attachment")
-	                              .filename(filename, StandardCharsets.UTF_8)
-	                              .build()
-	               );
-	         headers.add(HttpHeaders.CONTENT_TYPE, contentType);
-	         Resource resource = new InputStreamResource(Files.newInputStream(path));
-	         return new ResponseEntity<>(resource, headers, HttpStatus.OK);
-	      } catch (Exception e) {
-	         e.printStackTrace();
-	      }
-	      return null;
-	   }
-	
-	@GetMapping("/download/{filename}")
-	public ResponseEntity<Resource> download(@PathVariable String filename) {
-	
+	public ResponseEntity<Resource> profile(@PathVariable String filename) {
+		Path path = Paths.get(uploadDir + "profile/" + filename);
+		try {
+			String contentType = Files.probeContentType(path);
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentDisposition(
+					ContentDisposition.builder("attachment")
+					 				  .filename(filename, StandardCharsets.UTF_8)
+					 				  .build()
+					);
+			headers.add(HttpHeaders.CONTENT_TYPE, contentType);
+			Resource resource = new InputStreamResource(Files.newInputStream(path));
+			return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
+
+	@GetMapping("/download/{filename}")
+	public ResponseEntity<Resource> download(@PathVariable String filename) {
+		
+		return null;
+	}
+	
 }
