@@ -13,6 +13,7 @@ public class Board {
 	private int replyCount;
 	private int likeCount;
 	private String files;
+	private String uname;
 	
 	public Board() { }
 	public Board(int bid, String title, String content, String uid, LocalDateTime modTime, int isDeleted, int viewCount,
@@ -29,7 +30,23 @@ public class Board {
 		this.files = files;
 	};
 	
-	@Override
+	public Board(int bid, String title, String content, String uid, LocalDateTime modTime, int isDeleted, int viewCount,
+			int replyCount, int likeCount, String files, String uname) {
+		super();
+		this.bid = bid;
+		this.title = title;
+		this.content = content;
+		this.uid = uid;
+		this.modTime = modTime;
+		this.isDeleted = isDeleted;
+		this.viewCount = viewCount;
+		this.replyCount = replyCount;
+		this.likeCount = likeCount;
+		this.files = files;
+		this.uname = uname;
+	}
+	
+	@Override	// toString 에서는 uname 이 사용될 일이 없어 추가하지 않음
 	public String toString() {
 		return "Board [bid=" + bid + ", title=" + title + ", content=" + content + ", uid=" + uid + ", modTime="
 				+ modTime + ", isDeleted=" + isDeleted + ", viewCount=" + viewCount + ", replyCount=" + replyCount
@@ -95,5 +112,11 @@ public class Board {
 	}
 	public void setFiles(String files) {
 		this.files = files;
+	}
+	public String getUname() {
+		return uname;
+	}
+	public void setUname(String uname) {
+		this.uname = uname;
 	}
 }
