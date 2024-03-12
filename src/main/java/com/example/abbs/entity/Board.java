@@ -53,6 +53,14 @@ public class Board {
 				+ ", likeCount=" + likeCount + ", files=" + files + "]";
 	}
 	
+
+	public Board(String title, String content, String uid, String files) {
+		this.title = title;
+		this.content = content;
+		this.uid = uid;
+		this.files = files;
+	}
+	
 	public int getBid() {
 		return bid;
 	}

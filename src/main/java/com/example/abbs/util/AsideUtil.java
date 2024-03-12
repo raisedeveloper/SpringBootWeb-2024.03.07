@@ -22,13 +22,13 @@ public class AsideUtil {
 	@Value("${roadAddrKey}") private String roadAddrKey;
 	@Value("${kakaoApiKey}") private String kakaoApiKey;
 	@Value("${openWeatherApiKey}") private String openWeatherApiKey;
-	
+
 	public String getTodayQuote(String filename) {
 		String result = null;
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(filename), 1024);
-			int index = (int) Math.floor(Math.random() * 100); // 0~99까지의 값 도출
-			for (int i = 0; i <= index; i++)
+			int index = (int) Math.floor(Math.random() * 100);
+			for (int i = 0; i < index; i++)
 				result = br.readLine();
 			br.close();
 		} catch (Exception e) {
@@ -36,25 +36,24 @@ public class AsideUtil {
 		}
 		return result;
 	}
-	public String getRoadAddr(String keyword) {
-	      
+
+	public String getRoadAddr(String keyword) throws Exception { // 도로명 주소
 		String roadAddr = null;
 		try {
 			keyword = URLEncoder.encode(keyword, "utf-8");
-			String apiUrl = "https://www.juso.go.kr/addrlink/addrLinkApi.do" + "?confmKey=" + roadAddrKey
-			+ "&currentPage=1&countPerPage=5&resultType=json" + "&keyword=" + keyword;
-		      
+			String apiUrl = "https://www.juso.go.kr/addrlink/addrLinkApi.do" + "?confmKey=" + roadAddrKey + "&keyword="
+					+ keyword + "&currentPage=1&countPerPage=5&resultType=json";
+			System.out.println(apiUrl);
 			URL url = new URL(apiUrl);
 			BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
 			String line = null, result = "";
-			while ((line = br.readLine()) !=null)
+			while ((line = br.readLine()) != null)
 				result += line;
-			System.out.println(result);
 			br.close();
-			
+
 			// JSON 데이터에서 원하는 값 추출하기
 			JSONParser parser = new JSONParser();
-			JSONObject object = (JSONObject) parser.parse(result.toString());
+			JSONObject object = (JSONObject) parser.parse(result);
 			JSONObject results = (JSONObject) object.get("results");
 			JSONArray juso = (JSONArray) results.get("juso");
 			JSONObject jusoItem = (JSONObject) juso.get(0);
@@ -62,30 +61,25 @@ public class AsideUtil {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
 		return roadAddr;
 	}
-		
-	public Map<String, String> getGeocode(String addr) throws Exception {
+
+	public Map<String, String> getGeocode(String addr) { // 위도 및 경도
 		Map<String, String> map = new HashMap<String, String>();
 		try {
 			String query = URLEncoder.encode(addr, "utf-8");
-			String apiUrl = "https://dapi.kakao.com/v2/local/search/address.json"
-	                  + "?query=" + query;
-	      
+			String apiUrl = "https://dapi.kakao.com/v2/local/search/address.json" + "?query=" + query;
 			URL url = new URL(apiUrl);
-			
-			// Header setting
+			// Head Setting
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestProperty("Authorization", "KakaoAK " + kakaoApiKey); 
+			conn.setRequestProperty("Authorization", "KakaoAK " + kakaoApiKey);
 			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
-			StringBuffer sb = new StringBuffer();
 			String line = null, result = "";
-			
-			while ((line = br.readLine()) !=null)
+			while ((line = br.readLine()) != null)
 				result += line;
-			System.out.println(result);
 			br.close();
-			
+
 			// JSON 데이터에서 원하는 값 추출하기
 			JSONParser parser = new JSONParser();
 			JSONObject object = (JSONObject) parser.parse(result);
@@ -93,32 +87,29 @@ public class AsideUtil {
 			JSONObject item = (JSONObject) documents.get(0);
 			String lon_ = (String) item.get("x");
 			String lat_ = (String) item.get("y");
-			System.out.println(lon_ + ", " + lat_);
-	      
 			map.put("lon", lon_);
 			map.put("lat", lat_);
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
-		      return map;
+		return map;
 	}
-		
-	//Open Weather API
+
+	// Open Weather API
 	public String getWeather(String lon, String lat) {
-		String apiUrl = "https://api.openweathermap.org/data/2.5/weather"
-	            + "?lat=" + lat + "&lon=" + lon + "&appid=" + openWeatherApiKey
-	            + "&units=metric&lang=kr";
+		String apiUrl = "https://api.openweathermap.org/data/2.5/weather" + "?lat=" + lat + "&lon=" + lon + "&appid="
+				+ openWeatherApiKey + "&units=metric&lang=kr";
 		String weatherStr = null;
 		try {
-			
 			URL url = new URL(apiUrl);
 			BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
 			String line = null, result = "";
-			while ((line = br.readLine()) !=null)
+			while ((line = br.readLine()) != null)
 				result += line;
 			System.out.println(result);
 			br.close();
-			
+
+			// JSON 데이터에서 원하는 값 추출하기
 			JSONParser parser = new JSONParser();
 			JSONObject obj = (JSONObject) parser.parse(result);
 			JSONArray weather = (JSONArray) obj.get("weather");
@@ -129,15 +120,10 @@ public class AsideUtil {
 			double temp = (Double) main.get("temp");
 			String tempStr = String.format("%.1f", temp);
 			String iconUrl = "http://api.openweathermap.org/img/w/" + iconCode + ".png";
-			weatherStr = "<img src=\"" + iconUrl + "\" height=\"28\">" + desc + ","
-			+ " 온도: " + tempStr + "&#8451";
- 
-			} catch (Exception e) {
-				// TODO: handle exception
-				
-				
+			weatherStr = "<img src=\"" + iconUrl + "\" height=\"28\">" + desc + "," + " 온도: " + tempStr + "&#8451";
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return weatherStr;
 	}
-	
 }
