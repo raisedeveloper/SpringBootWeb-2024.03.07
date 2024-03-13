@@ -13,7 +13,7 @@
 				success: function(count) {
 					$('#likeCount').replaceWith(count);
 			}
-		});
+		}); 
 	}
 		function deleteBoard() {
 			$('#deleteModal').modal('show');
@@ -61,16 +61,19 @@
 							<h6>조회 [[${board.viewCount}]] &nbsp;&nbsp; 댓글 [[${board.replyCount}]]
 							</h6>
 							<span th:if="${session.sessUid eq board.uid}"> <!-- 본인은 좋아요 누르지 못함 -->
-								<a href="#"><i class="fa-regular fa-thumbs-up"></i> [[${count.likeCount}]]</a>
+								<a href="#">
+									<span th if="${session.likeClicked == 1}"><i class="fa-solid fa-thumbs-up"></i></span>
+									<span th if="${session.likeClicked == 0}"></span><i class="fa-regular fa-thumbs-up"></i> 
+									[[${count}]]
+								</a>
 							</span>
 							<span th:if="${session.sessUid ne board.uid}">
 								<a href="#" th:onclick="likeClick([[$board.bid]])">
-									<i class="fa-regular fa-thumbs-up"></i> 
+									<span th if="${session.likeClicked == 1}"><i class="fa-solid fa-thumbs-up"></i></span>
+									<span th if="${session.likeClicked == 0}"></span><i class="fa-regular fa-thumbs-up"></i></span>
 									<span id="likeCount" th:text="${count}"></span>
 								</a>
 							</span>
-								[[${board.likeCount}]]
-							
 							</h6>
 						</div>
 						<hr>

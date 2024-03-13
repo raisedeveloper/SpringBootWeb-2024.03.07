@@ -14,7 +14,7 @@ public interface LikeService {
 	
 	void insertlike(Like like);
 	
-	void togleLike(Like like);		// value 가 0 이면 1로 바꾸고, 1 이면 0 으로 바꿈
+	void toggleLike(Like like);		// value 가 0 이면 1로 바꾸고, 1 이면 0 으로 바꿈, value를 반환
 	
 	int getLikeCount(int bid);
 

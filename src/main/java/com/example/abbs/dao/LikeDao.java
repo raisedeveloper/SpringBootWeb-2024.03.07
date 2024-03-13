@@ -22,7 +22,7 @@ public interface LikeDao {
 	@Select("select * from likes where bid=#{bid}")
 	List<Like> getLikeList(int bid);
 	
-	@Insert("insert into likes vlaues(default, #{uid}, #{bid}, #{value}")
+	@Insert("insert into likes vlaues(default, #{uid}, #{bid}, #{value})")
 	void insertLike(Like like);
 	
 	@Update("update likes set value=#{value] where lid=#{lid}")

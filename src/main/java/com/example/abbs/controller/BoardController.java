@@ -115,6 +115,13 @@ public class BoardController {
 			model.addAttribute("fileList", fileList);
 		}
 		model.addAttribute("board", board);
+		
+		// 좋아요 처리
+		Like like = likeService.getLike(bid, sessUid);
+		if ( like == null)
+			session.setAttribute("likeClicked", 0);
+		else
+			session.setAttribute("likeClicked", like.getValue());
 		model.addAttribute("count", board.getLikeCount());
 		
 		int likeCount = likeService.getLikeCount(bid);
@@ -150,10 +157,13 @@ public class BoardController {
 		Like like = likeService.getLike(bid, sessUid);
 		if (like == null)
 			likeService.insertlike(new Like(sessUid, bid, 1));
-		else
-			likeService.togleLike(like);
+		else {
+			int value = likeService.toggleLike(like);
+			session.setAttribute("likeClicked", 1);
+		}
 		int count = likeService.getLikeCount(bid);
-//		boardservice.		board.LikeCount update	
+		boardservice.updateLikeCount(bid, count);
+		//board.LikeCount update	!!!
 		model.addAttribute("count", count);
 		return "board/detail::#likeCount";		// double colon meaning == 람다의 간결한 표현 / 메소드 레퍼런스 람다식과 같은 기능
 	}
