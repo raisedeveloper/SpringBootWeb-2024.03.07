@@ -7,21 +7,18 @@ public class Like {
 	private int value;
 	
 	public Like() { }
-	
-	public Like(int lid, int bid, int value) {
-		super();
-		this.lid = lid;
+	public Like(String uid, int bid, int value) {
+		this.uid = uid;
 		this.bid = bid;
 		this.value = value;
 	}
-	
 	public Like(int lid, String uid, int bid, int value) {
 		this.lid = lid;
 		this.uid = uid;
 		this.bid = bid;
 		this.value = value;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "Like [lid=" + lid + ", uid=" + uid + ", bid=" + bid + ", value=" + value + "]";

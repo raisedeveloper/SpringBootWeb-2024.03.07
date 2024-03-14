@@ -60,12 +60,14 @@ public class BoardController {
 		model.addAttribute("startPage", startPage);
 		model.addAttribute("endPage", endPage);
 		model.addAttribute("pageList", pageList);
+		model.addAttribute("menu", menu);
 		
 		return "board/list";
 	}
 	
 	@GetMapping("/insert")
-	public String insertForm() {
+	public String insertForm(Model model) {
+		model.addAttribute("menu", menu);
 		return "board/insert";
 	}
 	

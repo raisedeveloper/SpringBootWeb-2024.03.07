@@ -9,23 +9,23 @@ import org.apache.ibatis.annotations.Update;
 
 import com.example.abbs.entity.Board;
 
-@Mapper // 구현체는 마이바티스가 알아서 만들어줌
+@Mapper
 public interface BoardDao {
 
 	@Select("SELECT b.*, u.uname FROM board b"
 			+ " JOIN users u ON b.uid=u.uid"
-			+ " WHERE b.bid=#{bid}")  // ("") = SQL 채워넣을 자리
+			+ " WHERE b.bid=#{bid}")
 	Board getBoard(int bid);
 	
 	@Select("select count(b.bid) from board b"
-	         + " JOIN users u ON b.uid=u.uid"
-	         + " where b.isDeleted=0 and ${field} like #{query}")
-	int getBoardCount(String field, String query);		// field 이름 매핑에는 $ 를 씀
+			+ " JOIN users u ON b.uid=u.uid"
+			+ " where b.isDeleted=0 and ${field} like #{query}")
+	int getBoardCount(String field, String query);
 	
 	@Select("SELECT b.*, u.uname FROM board b"
 			+ " JOIN users u ON b.uid=u.uid"
 			+ " WHERE b.isDeleted=0 and ${field} like #{query}"
-			+ " ORDER BY b.bid desc"
+			+ " ORDER BY b.modTime desc"
 			+ " LIMIT #{count} OFFSET #{offset}")
 	List<Board> getBoardList(String field, String query, int count, int offset);
 	
@@ -42,5 +42,8 @@ public interface BoardDao {
 	
 	@Update("update board set ${field}=${field}+1 where bid=#{bid}")
 	void increaseCount(String field, int bid);	
+	
+	@Update("update board set likeCount=#{count} where bid=#{bid}")
+	void updateLikeCount(int bid, int count);
 	
 }

@@ -1,9 +1,11 @@
 package com.example.abbs.controller;
 
+import java.awt.Menu;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,13 +13,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.abbs.entity.SchDay;
+import com.example.abbs.service.ScheduleService;
 
 import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/schedule")
 public class ScheduleController {
-
+	@Autowired private ScheduleService schedSvc;
+private 
 	@GetMapping({"/calendar/{arrow}", "/calendar"})
 	public String calendar(@PathVariable(required=false) String arrow, HttpSession session, Model model) {
 		LocalDate today = LocalDate.now();
@@ -70,8 +74,10 @@ public class ScheduleController {
 			int prevYear = prevSunDay.getYear();
 			for (int i = 0; i < startDate; i++) {
 				sdate = String.format("%d%02d%02d", prevYear, prevMonth, prevDay+i);
+				// @Autowired private ScheduleService schedSvc;
+				SchDay sd = schedSvc.generateSchDay(sessUid, prevDay+i, sdate, lastDate, month);
 				SchDay sd = new SchDay();
-				sd.setDay(prevDay+i); sd.setDate(i); sd.setSdate(sdate);
+				sd.setDay(prevDay+i); sd.setDate(i); sd.setSdate(sdate); // 요일 = i
 				week.add(sd);
 			}
 		}
@@ -88,14 +94,14 @@ public class ScheduleController {
 		for (int k = day, i = 0; k <= lastDay.getDayOfMonth(); k++, i++) {
 			if (i % 7 == 0)
 				week = new ArrayList<>();
-			sdate = String.format("%d%02d%02d", year, month, k);
-			SchDay sd = new SchDay();
+			sdate = String.format("%d%02d%02d", year, month, k); {
+			SchDay sd = schedSvc.generateSchDay();
 			sd.setDay(k); sd.setDate(i % 7); sd.setSdate(sdate);
 			week.add(sd);
-			if (i % 7 == 6)
-				calendar.add(week);
 		}
+		calendar.add(week);
 		
+	}
 		// 다음 달 1일부터 그주 토요일까지
 		if (lastDate != 6) {
 			LocalDate nextDay = lastDay.plusDays(1);
@@ -115,8 +121,10 @@ public class ScheduleController {
 		model.addAttribute("year", year);
 		model.addAttribute("month", String.format("%02d", month));
 		model.addAttribute("height", 600 / calendar.size());
+		model.addAttribute("todaySdate", String.format("%d%02d%02d", today.getYear(), today.getMonthValue(), today.getDayOfMonth()));
+		model.addAttribute("menu", menu);
 		return "schedule/calendar";
 	}
-	
+
 	
 }
